@@ -1,0 +1,83 @@
+/* 기본 설정 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Pretendard', sans-serif; color: #1a1a1a; line-height: 1.6; }
+.section { padding: 100px 5%; width: 100%; }
+
+/* 상단 검은색 바 */
+.zero-section { padding: 15px 5% !important; background-color: #1a1a1a; color: #ffffff; min-height: auto; }
+.zero-content { display: flex; align-items: center; justify-content: center; gap: 30px; }
+.notice-badge { background-color: #333; padding: 3px 10px; font-size: 0.65rem; font-weight: 800; border-radius: 4px; }
+.notice-text { font-size: 0.85rem; font-weight: 500; }
+.zero-links a { color: #ffffff; text-decoration: none; font-size: 0.8rem; font-weight: 700; border-bottom: 1px solid #555; transition: 0.3s; }
+
+/* 네비게이션 */
+nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 50px; }
+.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
+.nav-menu { display: flex; align-items: center; list-style: none; }
+.nav-menu li { margin-left: 1rem; position: relative; }
+.nav-menu li a { text-decoration: none; color: #1a1a1a; font-weight: 700; font-size: 0.9rem; padding: 10px 15px; border-radius: 4px; transition: 0.3s; }
+.nav-menu li a:hover { background-color: #1a1a1a; color: #ffffff; }
+
+/* 상단 RESOURCES 드롭다운 */
+.nav-dropdown-list { display: none; position: absolute; top: 100%; left: 0; background: #fff; min-width: 160px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 1000; }
+.nav-dropdown-list a { color: #555 !important; display: block; padding: 10px 20px !important; background: none !important; border-radius: 0 !important; }
+.nav-dropdown-list a:hover { background: #f5f5f5 !important; color: #1a1a1a !important; }
+.nav-dropdown:hover .nav-dropdown-list { display: block; }
+
+/* 인트로 */
+.intro-section { height: 100vh; display: flex; flex-direction: column; }
+.tag { font-size: 0.8rem; font-weight: 800; color: #888; letter-spacing: 3px; }
+.intro-content h1 { font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin: 20px 0; letter-spacing: -2px; }
+.intro-content p { font-size: 1.25rem; color: #555; max-width: 600px; }
+
+/* 업데이트 카드 영역 */
+.update-section { background-color: #f5f5f5; }
+.section-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 60px; text-align: center; }
+.update-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 1200px; margin: 0 auto; }
+.update-card { background: #fff; padding: 40px; border-radius: 4px; transition: 0.3s; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+.update-card h3 { margin: 15px 0; font-size: 1.5rem; }
+.update-card p { margin-bottom: 30px; color: #666; }
+.update-card:hover { transform: translateY(-10px); }
+.update-card.highlight { background-color: #1a1a1a; color: #fff; }
+.update-card.highlight p { color: #ccc; }
+
+.link-btn { text-decoration: none; color: inherit; font-weight: 800; border-bottom: 2px solid; padding-bottom: 5px; cursor: pointer; display: inline-block; }
+
+/* ★ YEARLY FOLLOW UP 드롭다운 스타일 ★ */
+.follow-up-wrapper { position: relative; display: inline-block; margin-top: 10px; }
+.dropdown-content { 
+    display: none; 
+    position: absolute; 
+    bottom: 100%; /* 위쪽으로 뜨게 하거나 top: 100%로 아래로 뜨게 조절 가능 */
+    left: 0; 
+    background: #1a1a1a; 
+    min-width: 180px; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+    z-index: 10;
+    border-radius: 4px;
+    padding: 10px 0;
+}
+.dropdown-content a { 
+    color: #fff; 
+    padding: 12px 20px; 
+    text-decoration: none; 
+    display: block; 
+    font-size: 0.85rem; 
+    transition: 0.2s;
+}
+.dropdown-content a:hover { background: #333; }
+.follow-up-wrapper:hover .dropdown-content { display: block; }
+
+/* 로그인 버튼 */
+.login-btn { border: 1.5px solid #1a1a1a; padding: 8px 20px !important; }
+
+/* 인포 및 푸터 */
+.info-section { background-color: #fdfaf5; }
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1200px; margin: 0 auto; }
+footer { text-align: center; padding: 40px; background: #fdfaf5; font-size: 0.75rem; color: #bbb; }
+
+@media (max-width: 768px) {
+    .update-grid, .info-grid { grid-template-columns: 1fr; }
+    .intro-content h1 { font-size: 2.5rem; }
+    .nav-menu { display: none; }
+}

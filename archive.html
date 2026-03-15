@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANNA | Archive</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <style>
+        .archive-wrapper { display: flex; min-height: 100vh; background: #fff; }
+        
+        /* 사이드바 스타일 */
+        .sidebar {
+            width: 280px; border-right: 1px solid #eee; padding: 60px 40px;
+            position: sticky; top: 0; height: 100vh;
+        }
+        .sidebar h2 { font-size: 1rem; color: #888; margin-bottom: 30px; letter-spacing: 2px; }
+        .year-list { list-style: none; }
+        .year-item { margin-bottom: 25px; cursor: pointer; color: #ccc; font-size: 1.8rem; font-weight: 800; transition: 0.3s; }
+        .year-item:hover, .year-item.active { color: #1a1a1a; transform: translateX(10px); }
+
+        /* 메인 콘텐츠 스타일 */
+        .main-content { flex: 1; padding: 80px 8%; max-width: 1000px; }
+        .back-home { text-decoration: none; color: #888; font-size: 0.85rem; font-weight: 600; margin-bottom: 40px; display: inline-block; }
+        
+        #month-grid-view { display: block; }
+        .year-display { font-size: 4rem; font-weight: 900; margin-bottom: 50px; letter-spacing: -2px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .month-btn {
+            aspect-ratio: 1.2 / 1; border: 1px solid #eee; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .month-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+        /* 상세 내용 뷰 스타일 */
+        #detail-view { display: none; }
+        .detail-header { margin-bottom: 40px; border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; }
+        .detail-title { font-size: 2.5rem; font-weight: 900; }
+        .detail-body { font-size: 1.1rem; line-height: 1.8; color: #444; white-space: pre-wrap; }
+        .close-btn { background: #f5f5f5; padding: 10px 20px; border: none; font-weight: 700; cursor: pointer; margin-bottom: 30px; border-radius: 4px; }
+
+        @media (max-width: 768px) {
+            .archive-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 30px; border-right: none; border-bottom: 1px solid #eee; }
+            .year-list { display: flex; gap: 20px; }
+            .grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="archive-wrapper">
+        <aside class="sidebar">
+            <h2>YEARS</h2>
+            <ul class="year-list">
+                <li class="year-item active" onclick="changeYear('2026')">2026</li>
+                <li class="year-item" onclick="changeYear('2025')">2025</li>
+                <li class="year-item" onclick="changeYear('2024')">2024</li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <a href="index.html" class="back-home">← BACK TO HOME</a>
+            
+            <div id="month-grid-view">
+                <h1 class="year-display" id="selected-year">2026</h1>
+                <div class="grid" id="month-grid"></div>
+            </div>
+
+            <div id="detail-view">
+                <button class="close-btn" onclick="closeDetail()">← 목록으로 돌아가기</button>
+                <div class="detail-header">
+                    <h1 class="detail-title" id="content-title"></h1>
+                </div>
+                <div class="detail-body" id="content-body"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 실제 공지 데이터 (여기에 내용을 추가하세요)
+        const archiveData = {
+            "2026": { 
+                "1": "2026년 1월 정기 공지입니다.\n새로운 시즌이 시작되었습니다.", 
+                "2": "2월은 기록의 달입니다. 다양한 활동을 준비했습니다." 
+            },
+            "2025": { 
+                "1": "2025년 1월 아카이브입니다.",
+                "2": "2025년 2월 아카이브입니다.",
+                "3": "2025년 3월 아카이브입니다.",
+                "4": "2025년 4월 아카이브입니다.",
+                "5": "2025년 5월 아카이브입니다.",
+                "6": "2025년 6월 아카이브입니다.",
+                "7": "2025년 7월 아카이브입니다.",
+                "8": "2025년 8월 아카이브입니다.",
+                "9": "2025년 9월 아카이브입니다.",
+                "10": "2025년 10월 아카이브입니다.",
+                "11": "2025년 11월 아카이브입니다.",
+                "12": "2025년의 마지막 정기 공지입니다." 
+            },
+            "2024": { 
+                "5": "산나 커뮤니티의 시작! 첫 번째 공지사항입니다." 
+            }
+        };
+
+        let currentYear = "2026";
+
+        function changeYear(year) {
+            currentYear = year;
+            document.getElementById('selected-year').innerText = year;
+            document.querySelectorAll('.year-item').forEach(item => {
+                item.classList.remove('active');
+                if(item.innerText === year) item.classList.add('active');
+            });
+            renderGrid();
+            closeDetail();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('month-grid');
+            grid.innerHTML = "";
+            for (let i = 1; i <= 12; i++) {
+                const btn = document.createElement('div');
+                btn.className = 'month-btn';
+                btn.innerText = i < 10 ? `0${i}월` : `${i}월`;
+                btn.onclick = () => showDetail(i);
+                grid.appendChild(btn);
+            }
+        }
+
+        function showDetail(month) {
+            const body = archiveData[currentYear]?.[month] || "아직 작성된 공지가 없습니다.";
+            document.getElementById('content-title').innerText = `${currentYear}년 ${month}월 정기 공지`;
+            document.getElementById('content-body').innerText = body;
+            document.getElementById('month-grid-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function closeDetail() {
+            document.getElementById('month-grid-view').style.display = 'block';
+            document.getElementById('detail-view').style.display = 'none';
+        }
+
+        renderGrid(); // 초기 그리드 생성
+    </script>
+</body>
+</html>
