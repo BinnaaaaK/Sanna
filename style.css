@@ -1,83 +1,116 @@
-/* 기본 설정 */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Pretendard', sans-serif; color: #1a1a1a; line-height: 1.6; }
-.section { padding: 100px 5%; width: 100%; }
+/* --- Main #1 레이아웃 수정 및 추가 --- */
 
-/* 상단 검은색 바 */
-.zero-section { padding: 15px 5% !important; background-color: #1a1a1a; color: #ffffff; min-height: auto; }
-.zero-content { display: flex; align-items: center; justify-content: center; gap: 30px; }
-.notice-badge { background-color: #333; padding: 3px 10px; font-size: 0.65rem; font-weight: 800; border-radius: 4px; }
-.notice-text { font-size: 0.85rem; font-weight: 500; }
-.zero-links a { color: #ffffff; text-decoration: none; font-size: 0.8rem; font-weight: 700; border-bottom: 1px solid #555; transition: 0.3s; }
-
-/* 네비게이션 */
-nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 50px; }
-.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
-.nav-menu { display: flex; align-items: center; list-style: none; }
-.nav-menu li { margin-left: 1rem; position: relative; }
-.nav-menu li a { text-decoration: none; color: #1a1a1a; font-weight: 700; font-size: 0.9rem; padding: 10px 15px; border-radius: 4px; transition: 0.3s; }
-.nav-menu li a:hover { background-color: #1a1a1a; color: #ffffff; }
-
-/* 상단 RESOURCES 드롭다운 */
-.nav-dropdown-list { display: none; position: absolute; top: 100%; left: 0; background: #fff; min-width: 160px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 1000; }
-.nav-dropdown-list a { color: #555 !important; display: block; padding: 10px 20px !important; background: none !important; border-radius: 0 !important; }
-.nav-dropdown-list a:hover { background: #f5f5f5 !important; color: #1a1a1a !important; }
-.nav-dropdown:hover .nav-dropdown-list { display: block; }
-
-/* 인트로 */
-.intro-section { height: 100vh; display: flex; flex-direction: column; }
-.tag { font-size: 0.8rem; font-weight: 800; color: #888; letter-spacing: 3px; }
-.intro-content h1 { font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin: 20px 0; letter-spacing: -2px; }
-.intro-content p { font-size: 1.25rem; color: #555; max-width: 600px; }
-
-/* 업데이트 카드 영역 */
-.update-section { background-color: #f5f5f5; }
-.section-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 60px; text-align: center; }
-.update-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 1200px; margin: 0 auto; }
-.update-card { background: #fff; padding: 40px; border-radius: 4px; transition: 0.3s; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
-.update-card h3 { margin: 15px 0; font-size: 1.5rem; }
-.update-card p { margin-bottom: 30px; color: #666; }
-.update-card:hover { transform: translateY(-10px); }
-.update-card.highlight { background-color: #1a1a1a; color: #fff; }
-.update-card.highlight p { color: #ccc; }
-
-.link-btn { text-decoration: none; color: inherit; font-weight: 800; border-bottom: 2px solid; padding-bottom: 5px; cursor: pointer; display: inline-block; }
-
-/* ★ YEARLY FOLLOW UP 드롭다운 스타일 ★ */
-.follow-up-wrapper { position: relative; display: inline-block; margin-top: 10px; }
-.dropdown-content { 
-    display: none; 
-    position: absolute; 
-    bottom: 100%; /* 위쪽으로 뜨게 하거나 top: 100%로 아래로 뜨게 조절 가능 */
-    left: 0; 
-    background: #1a1a1a; 
-    min-width: 180px; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
-    z-index: 10;
-    border-radius: 4px;
-    padding: 10px 0;
+/* 1. 네비게이션 내 Info 드롭다운 스타일 (기존 RESOURCES 스타일 활용) */
+.nav-dropdown:hover .nav-dropdown-list {
+    display: block;
 }
-.dropdown-content a { 
-    color: #fff; 
-    padding: 12px 20px; 
+
+/* 2. 메인 컨테이너: 왼쪽(글/콘티)과 오른쪽(이미지) 배치 */
+.main-one-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* 하단 정렬로 '중부 하단' 느낌 강조 */
+    height: 65vh; /* 섹션 내 적절한 높이 확보 */
+    gap: 50px;
+    margin-top: 20px;
+}
+
+/* 3. 왼쪽 콘텐츠 영역 (표어 + 콘티박스) */
+.left-content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding-bottom: 20px;
+}
+
+.sanna-motto {
+    font-size: 3.5rem !important;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: -2px;
+}
+
+/* 4. 콘티 박스 디자인 (왼쪽 하단 위치) */
+.conti-box {
+    width: 220px;
+    height: 220px;
+    background: #1a1a1a;
+    color: white;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+.conti-box:hover {
+    transform: translateY(-5px);
+    background: #333;
+}
+
+.box-label { 
+    font-weight: 800; 
+    font-size: 0.9rem; 
+    letter-spacing: 1px;
+    color: #eee;
+}
+
+.conti-link-icon { 
+    align-self: flex-end; 
+    font-size: 1.8rem; 
     text-decoration: none; 
-    display: block; 
-    font-size: 0.85rem; 
-    transition: 0.2s;
+    color: #fff;
 }
-.dropdown-content a:hover { background: #333; }
-.follow-up-wrapper:hover .dropdown-content { display: block; }
 
-/* 로그인 버튼 */
-.login-btn { border: 1.5px solid #1a1a1a; padding: 8px 20px !important; }
+/* 5. 오른쪽 이미지 슬라이더 영역 */
+.right-image-area {
+    flex: 1.3;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
 
-/* 인포 및 푸터 */
-.info-section { background-color: #fdfaf5; }
-.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1200px; margin: 0 auto; }
-footer { text-align: center; padding: 40px; background: #fdfaf5; font-size: 0.75rem; color: #bbb; }
+.slider-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #f0f0f0;
+}
 
-@media (max-width: 768px) {
-    .update-grid, .info-grid { grid-template-columns: 1fr; }
-    .intro-content h1 { font-size: 2.5rem; }
-    .nav-menu { display: none; }
+.slider-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1); /* 부드러운 스와이프 효과 */
+}
+
+.slide {
+    min-width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 박스에 꽉 차게 */
+}
+
+/* 반응형: 모바일에서는 위아래로 배치 */
+@media (max-width: 900px) {
+    .main-one-container {
+        flex-direction: column;
+        height: auto;
+        align-items: center;
+    }
+    .left-content-area {
+        gap: 30px;
+        text-align: center;
+    }
+    .conti-box {
+        margin: 0 auto;
+    }
+    .right-image-area {
+        width: 100%;
+        height: 350px;
+    }
 }
