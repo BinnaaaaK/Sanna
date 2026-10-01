@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SANNA | Archive</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
         .archive-wrapper { display: flex; min-height: 100vh; background: #fff; }
@@ -28,22 +28,45 @@
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .month-btn {
             aspect-ratio: 1.2 / 1; border: 1px solid #eee; display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.3s; border-radius: 8px;
         }
         .month-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
         /* 상세 내용 뷰 스타일 */
         #detail-view { display: none; }
-        .detail-header { margin-bottom: 40px; border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; }
+        .detail-header { 
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 40px; border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; 
+        }
         .detail-title { font-size: 2.5rem; font-weight: 900; }
-        .detail-body { font-size: 1.1rem; line-height: 1.8; color: #444; white-space: pre-wrap; }
-        .close-btn { background: #f5f5f5; padding: 10px 20px; border: none; font-weight: 700; cursor: pointer; margin-bottom: 30px; border-radius: 4px; }
+        .detail-body { font-size: 1.1rem; line-height: 1.8; color: #444; white-space: pre-wrap; margin-bottom: 40px; }
+        
+        /* 버튼 공통 스타일 */
+        .btn-group { display: flex; gap: 10px; margin-bottom: 30px; }
+        .action-btn { 
+            background: #f5f5f5; padding: 10px 20px; border: none; font-weight: 700; 
+            cursor: pointer; border-radius: 6px; transition: 0.2s; font-size: 0.9rem;
+        }
+        .action-btn:hover { background: #e5e5e5; }
+        .edit-btn { background: #1a1a1a; color: #fff; }
+        .edit-btn:hover { background: #333; }
+        .save-btn { background: #007bff; color: #fff; }
+        .save-btn:hover { background: #0056b3; }
+
+        /* 수정 입력 창 스타일 */
+        #edit-area { display: none; margin-top: 20px; }
+        .edit-textarea {
+            width: 100%; height: 250px; padding: 15px; font-size: 1rem; line-height: 1.6;
+            border: 1px solid #ccc; border-radius: 8px; font-family: inherit; resize: vertical;
+            margin-bottom: 15px; box-sizing: border-box;
+        }
 
         @media (max-width: 768px) {
             .archive-wrapper { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; padding: 30px; border-right: none; border-bottom: 1px solid #eee; }
             .year-list { display: flex; gap: 20px; }
             .grid { grid-template-columns: repeat(2, 1fr); }
+            .detail-header { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
@@ -61,40 +84,47 @@
         <main class="main-content">
             <a href="index.html" class="back-home">← BACK TO HOME</a>
             
+            <!-- 월별 그리드 뷰 -->
             <div id="month-grid-view">
                 <h1 class="year-display" id="selected-year">2026</h1>
                 <div class="grid" id="month-grid"></div>
             </div>
 
+            <!-- 공지 상세 및 수정 뷰 -->
             <div id="detail-view">
-                <button class="close-btn" onclick="closeDetail()">← 목록으로 돌아가기</button>
+                <div class="btn-group">
+                    <button class="action-btn" onclick="closeDetail()">← 목록으로 돌아가기</button>
+                    <button class="action-btn edit-btn" id="toggle-edit-btn" onclick="toggleEdit()">✏️ 수정하기</button>
+                </div>
+
                 <div class="detail-header">
                     <h1 class="detail-title" id="content-title"></h1>
                 </div>
+
+                <!-- 읽기 모드 -->
                 <div class="detail-body" id="content-body"></div>
+
+                <!-- 수정 모드 -->
+                <div id="edit-area">
+                    <textarea class="edit-textarea" id="edit-input" placeholder="공지 내용을 입력하세요..."></textarea>
+                    <div class="btn-group">
+                        <button class="action-btn save-btn" onclick="saveNotice()">저장하기</button>
+                        <button class="action-btn" onclick="cancelEdit()">취소</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
     <script>
-        // 실제 공지 데이터 (여기에 내용을 추가하세요)
-        const archiveData = {
+        // 기본 초기 데이터
+        const defaultArchiveData = {
             "2026": { 
                 "1": "2026년 1월 정기 공지입니다.\n새로운 시즌이 시작되었습니다.", 
                 "2": "2월은 기록의 달입니다. 다양한 활동을 준비했습니다." 
             },
             "2025": { 
                 "1": "2025년 1월 아카이브입니다.",
-                "2": "2025년 2월 아카이브입니다.",
-                "3": "2025년 3월 아카이브입니다.",
-                "4": "2025년 4월 아카이브입니다.",
-                "5": "2025년 5월 아카이브입니다.",
-                "6": "2025년 6월 아카이브입니다.",
-                "7": "2025년 7월 아카이브입니다.",
-                "8": "2025년 8월 아카이브입니다.",
-                "9": "2025년 9월 아카이브입니다.",
-                "10": "2025년 10월 아카이브입니다.",
-                "11": "2025년 11월 아카이브입니다.",
                 "12": "2025년의 마지막 정기 공지입니다." 
             },
             "2024": { 
@@ -102,7 +132,15 @@
             }
         };
 
+        // localStorage에서 데이터를 불러오고, 없으면 기본값 저장
+        let archiveData = JSON.parse(localStorage.getItem('sanna_archive_data')) || defaultArchiveData;
+
         let currentYear = "2026";
+        let currentMonth = null;
+
+        function saveToLocalStorage() {
+            localStorage.setItem('sanna_archive_data', JSON.stringify(archiveData));
+        }
 
         function changeYear(year) {
             currentYear = year;
@@ -128,9 +166,15 @@
         }
 
         function showDetail(month) {
-            const body = archiveData[currentYear]?.[month] || "아직 작성된 공지가 없습니다.";
+            currentMonth = month;
+            const bodyText = archiveData[currentYear]?.[month] || "아직 작성된 공지가 없습니다.";
+            
             document.getElementById('content-title').innerText = `${currentYear}년 ${month}월 정기 공지`;
-            document.getElementById('content-body').innerText = body;
+            document.getElementById('content-body').innerText = bodyText;
+            
+            // 수정 상태 초기화
+            cancelEdit();
+
             document.getElementById('month-grid-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'block';
             window.scrollTo(0,0);
@@ -139,6 +183,38 @@
         function closeDetail() {
             document.getElementById('month-grid-view').style.display = 'block';
             document.getElementById('detail-view').style.display = 'none';
+        }
+
+        // 수정 기능 함수들
+        function toggleEdit() {
+            const currentBody = archiveData[currentYear]?.[currentMonth] || "";
+            document.getElementById('edit-input').value = currentBody;
+            document.getElementById('content-body').style.display = 'none';
+            document.getElementById('edit-area').style.display = 'block';
+            document.getElementById('toggle-edit-btn').style.display = 'none';
+        }
+
+        function cancelEdit() {
+            document.getElementById('content-body').style.display = 'block';
+            document.getElementById('edit-area').style.display = 'none';
+            document.getElementById('toggle-edit-btn').style.display = 'inline-block';
+        }
+
+        function saveNotice() {
+            const updatedText = document.getElementById('edit-input').value;
+
+            if (!archiveData[currentYear]) {
+                archiveData[currentYear] = {};
+            }
+
+            // 데이터 업데이트 및 저장
+            archiveData[currentYear][currentMonth] = updatedText;
+            saveToLocalStorage();
+
+            // 화면 갱신
+            document.getElementById('content-body').innerText = updatedText || "아직 작성된 공지가 없습니다.";
+            cancelEdit();
+            alert('성공적으로 저장되었습니다!');
         }
 
         renderGrid(); // 초기 그리드 생성
