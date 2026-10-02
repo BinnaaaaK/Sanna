@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SANNA | Official</title>
-    <!-- 상대 경로 ./style.css 로 수정 -->
     <link rel="stylesheet" href="./style.css" />
     <link
       rel="stylesheet"
@@ -12,6 +11,72 @@
       crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
     />
+    <style>
+      /* 접근 제한 레이어 팝업 (Modal) 스타일 */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background: #ffffff;
+        width: 90%;
+        max-width: 420px;
+        padding: 35px 30px;
+        border-radius: 16px;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        animation: modalFadeIn 0.25s ease-out;
+      }
+      @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .modal-close-btn {
+        position: absolute;
+        top: 15px; right: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: #888;
+        border: none;
+        background: none;
+      }
+      .modal-close-btn:hover { color: #1a1a1a; }
+      .modal-icon {
+        font-size: 2.8rem;
+        margin-bottom: 15px;
+      }
+      .modal-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: #1a1a1a;
+      }
+      .modal-desc {
+        font-size: 0.95rem;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 25px;
+      }
+      .modal-action-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #1a1a1a;
+        color: #fff;
+        border-radius: 8px;
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+    </style>
   </head>
   <body>
     <section class="section zero-section">
@@ -39,7 +104,9 @@
             </div>
           </li>
           <li><a href="#info">INFO</a></li>
-          <li class="login-item"><a href="#" class="login-btn">LOGIN</a></li>
+          <li class="login-item" id="auth-nav-item">
+            <a href="login.html" class="login-btn">LOGIN</a>
+          </li>
         </ul>
       </nav>
       <div class="intro-content">
@@ -56,11 +123,12 @@
       <div class="container">
         <h2 class="section-title">UPDATES</h2>
         <div class="update-grid">
+          <!-- 정기 공지 (권한제한 카드) -->
           <div class="update-card">
             <span class="card-label">WEEKLY</span>
             <h3>정기 공지</h3>
             <p>이번 주의 새로운 소식과 일정 안내입니다.</p>
-            <a href="archive.html" class="link-btn">READ MORE</a>
+            <a href="javascript:void(0)" onclick="accessArchive()" class="link-btn">READ MORE</a>
           </div>
 
           <div class="update-card highlight">
@@ -124,5 +192,72 @@
     <footer>
       <p>&copy; 2026 SANNA. All rights reserved.</p>
     </footer>
+
+    <!-- 회원 전용 제한 경고 모달 (X버튼을 클릭해야만 닫힘) -->
+    <div class="modal-overlay" id="access-modal">
+      <div class="modal-content">
+        <button class="modal-close-btn" onclick="closeModal()">✕</button>
+        <div class="modal-icon">🔒</div>
+        <div class="modal-title">산나 회원 전용 콘텐츠</div>
+        <div class="modal-desc" id="modal-desc-text">
+          정기 공지는 산나 정회원(<b>_sanna</b> 계정)만 읽을 수 있습니다.<br>
+          로그인하시거나 회원가입을 진행해 주세요.
+        </div>
+        <a href="login.html" class="modal-action-btn">로그인 / 회원가입 하러 가기</a>
+      </div>
+    </div>
+
+    <script>
+      // 페이지 로드 시 로그인 상태 체크 및 네비게이션 처리
+      document.addEventListener("DOMContentLoaded", function() {
+        const currentUser = JSON.parse(localStorage.getItem('sanna_current_user'));
+        const authNavItem = document.getElementById('auth-nav-item');
+
+        if (currentUser) {
+          // 로그인된 상태일 때 유저 이름과 로그아웃 버튼 표시
+          authNavItem.innerHTML = `
+            <span style="font-size:0.85rem; font-weight:700; margin-right:10px;">${currentUser.username}</span>
+            <a href="javascript:void(0)" onclick="handleLogout()" class="login-btn" style="background:#666;">LOGOUT</a>
+          `;
+        }
+      });
+
+      function handleLogout() {
+        localStorage.removeItem('sanna_current_user');
+        alert('로그아웃 되었습니다.');
+        window.location.reload();
+      }
+
+      // 정기 공지 클릭 시 권한 체크 함수
+      function accessArchive() {
+        const currentUser = JSON.parse(localStorage.getItem('sanna_current_user'));
+
+        // 1. 아예 로그인을 안 한 경우
+        if (!currentUser) {
+          document.getElementById('modal-desc-text').innerHTML = "정기 공지는 산나 정회원(<b>_sanna</b> 계정)만 읽을 수 있습니다.<br>로그인하시거나 산나 회원으로 가입해 주세요.";
+          openModal();
+          return;
+        }
+
+        // 2. 로그인되었으나 아이디 뒤에 '_sanna'가 없는 일반 회원인 경우
+        if (!currentUser.isSanna) {
+          document.getElementById('modal-desc-text').innerHTML = `현재 계정(<b>${currentUser.username}</b>)은 산나 회원 계정이 아닙니다.<br>정기 공지 접근 권한이 없습니다.`;
+          openModal();
+          return;
+        }
+
+        // 3. 산나 정회원(_sanna)인 경우 정상 이동
+        window.location.href = 'archive.html';
+      }
+
+      function openModal() {
+        document.getElementById('access-modal').style.display = 'flex';
+      }
+
+      // X 버튼을 클릭해야만 닫힘
+      function closeModal() {
+        document.getElementById('access-modal').style.display = 'none';
+      }
+    </script>
   </body>
 </html>
