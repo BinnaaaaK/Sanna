@@ -1,510 +1,878 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SANNA | Login & Sign Up</title>
-  <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>SANNA | 로그인 · 회원가입</title>
+
+  <!-- 공통 스타일 -->
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- Pretendard 폰트 -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+  />
 
   <style>
-    .auth-container {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+
+    /* ==========================================
+       1. 로그인 페이지 기본 레이아웃
+       ========================================== */
+
+    body {
       background: #fcfcfc;
-      padding: 20px;
     }
 
-    .auth-box {
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 16px;
+    .auth-layout {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px 16px;
+    }
+
+    .auth-panel {
+      background: #ffffff;
+      border: 1px solid #ebebeb;
+      border-radius: 18px;
       padding: 40px;
       width: 100%;
-      max-width: 440px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      max-width: 460px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.03);
     }
 
-    .auth-header {
+
+    /* ==========================================
+       2. 제목 및 안내문
+       ========================================== */
+
+    .auth-heading {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 26px;
     }
 
-    .auth-header h2 {
-      font-size: 1.8rem;
+    .auth-heading h1 {
+      font-size: 27px;
       font-weight: 900;
-      margin-bottom: 8px;
+      letter-spacing: -1px;
     }
 
-    .auth-header p {
-      font-size: 0.9rem;
-      color: #666;
+    .auth-heading p {
+      font-size: 14px;
+      color: #777;
+      margin-top: 8px;
     }
 
-    .social-btn-group {
+
+    /* ==========================================
+       3. 로그인 / 회원가입 탭
+       ========================================== */
+
+    .auth-tabs {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 12px;
+      background: #f4f4f4;
+      border-radius: 10px;
+      padding: 5px;
+      gap: 5px;
+      margin-bottom: 24px;
+    }
+
+    .auth-tabs button {
+      width: 50%;
+      padding: 11px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #777;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .auth-tabs button.active {
+      background: #ffffff;
+      color: #111;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+    }
+
+
+    /* ==========================================
+       4. 입력 폼
+       ========================================== */
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 750;
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .field input[type="email"],
+    .field input[type="password"],
+    .field input[type="text"] {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 13px 12px;
+      font-size: 15px;
+      background: #ffffff;
+    }
+
+    .field input:focus {
+      border-color: #111;
+      outline: none;
+    }
+
+
+    /* ==========================================
+       5. 메인 버튼
+       ========================================== */
+
+    .auth-submit {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      background: #1a1a1a;
+      color: #ffffff;
+      padding: 14px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .auth-submit:hover {
+      background: #333;
+    }
+
+    .auth-submit:disabled,
+    .social-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+
+    /* ==========================================
+       6. 구분선
+       ========================================== */
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      height: 1px;
+      background: #eee;
+      flex: 1;
+    }
+
+
+    /* ==========================================
+       7. 간편로그인 버튼
+       ========================================== */
+
+    .social-stack {
+      display: grid;
+      gap: 9px;
     }
 
     .social-btn {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-kakao { background: #FEE500; color: #191919; }
-    .btn-naver { background: #03C75A; color: #fff; }
-    .btn-google { background: #fff; color: #333; border: 1px solid #ddd; }
-
-    .social-hint {
-      text-align: center;
-      font-size: 0.78rem;
-      color: #888;
-      margin-bottom: 20px;
-    }
-
-    .divider {
-      text-align: center;
-      color: #aaa;
-      font-size: 0.8rem;
-      margin: 20px 0;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label,
-    .member-type-label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 7px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 12px;
       border: 1px solid #ddd;
       border-radius: 8px;
-      font-size: 0.95rem;
-      font-family: inherit;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #1a1a1a;
-    }
-
-    .member-type-selector {
-      margin-bottom: 20px;
-    }
-
-    .type-options {
-      display: flex;
-      gap: 10px;
-    }
-
-    .type-card {
-      flex: 1;
-      padding: 13px 10px;
-      border: 2px solid #eee;
-      border-radius: 10px;
-      text-align: center;
+      padding: 13px;
+      font-weight: 800;
+      font-size: 14px;
       cursor: pointer;
+      background: #ffffff;
+      transition: opacity 0.2s;
     }
 
-    .type-card:has(input:checked) {
+    .social-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* 카카오 */
+    .social-btn.kakao {
+      background: #fee500;
+      border-color: #fee500;
+      color: #191919;
+    }
+
+    /* 네이버 */
+    .social-btn.naver {
+      background: #03c75a;
+      border-color: #03c75a;
+      color: #ffffff;
+    }
+
+
+    /* ==========================================
+       8. 안내 및 오류 메시지
+       ========================================== */
+
+    .feedback {
+      display: none;
+      margin: 17px 0 0;
+      padding: 13px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.error {
+      background: #fff1ef;
+      color: #9b2020;
+    }
+
+    .feedback.ok {
+      background: #ecf8ef;
+      color: #176934;
+    }
+
+    .feedback.info {
+      background: #f1f3f5;
+      color: #475467;
+    }
+
+    .signup-note {
+      font-size: 12px;
+      color: #777;
+      line-height: 1.6;
+      margin: 12px 0;
+    }
+
+
+    /* ==========================================
+       9. 회원 유형 선택
+       ========================================== */
+
+    .radio-box {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 9px 0;
+
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .radio-box:hover {
+      border-color: #999;
+    }
+
+    .radio-box:has(input:checked) {
       border-color: #1a1a1a;
       background: #f9f9f9;
     }
 
-    .type-card input { display: none; }
-    .type-card .title { font-size: 0.9rem; font-weight: 800; }
-    .type-card .desc { font-size: 0.75rem; color: #777; }
-
-    .submit-btn {
-      width: 100%;
-      padding: 13px;
-      background: #1a1a1a;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
+    .radio-box input {
+      margin-top: 4px;
+      accent-color: #1a1a1a;
     }
 
-    .submit-btn:hover { background: #333; }
-    .submit-btn:disabled { opacity: 0.5; cursor: wait; }
-
-    .toggle-auth {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 0.85rem;
-      color: #666;
+    .radio-box strong {
+      font-size: 14px;
+      font-weight: 800;
     }
 
-    .toggle-auth button {
-      background: none;
-      border: none;
-      color: #1a1a1a;
+    .radio-box span {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+
+    /* ==========================================
+       10. 개인정보 동의
+       ========================================== */
+
+    .terms {
+      font-size: 12px;
+      line-height: 1.65;
+      color: #555;
+
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+
+      margin-top: 18px;
+    }
+
+    .terms input {
+      margin-top: 4px;
+      flex-shrink: 0;
+      accent-color: #1a1a1a;
+    }
+
+    .terms a {
       text-decoration: underline;
-      font-weight: 700;
+    }
+
+
+    /* ==========================================
+       11. 보조 버튼
+       ========================================== */
+
+    .secondary-btn {
+      border: 0;
+      background: none;
+      text-decoration: underline;
       cursor: pointer;
-      font-size: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      display: block;
+      margin: 16px auto 0;
+      padding: 4px;
     }
 
-    .feedback {
-      display: none;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 15px;
-      font-size: 0.85rem;
-      line-height: 1.6;
+    .secondary-btn:hover {
+      color: #111;
     }
 
-    .feedback.error { display: block; background: #fff2f0; color: #a52222; }
-    .feedback.success { display: block; background: #edf8f0; color: #217443; }
-    .feedback.info { display: block; background: #f2f4f7; color: #44505f; }
+    .back {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    .back a:hover {
+      color: #111;
+    }
+
+
+    /* ==========================================
+       12. 화면 표시 제어
+       ========================================== */
+
+    .hidden {
+      display: none !important;
+    }
+
+
+    /* ==========================================
+       13. 모바일 반응형
+       ========================================== */
 
     @media (max-width: 480px) {
-      .auth-box { padding: 30px 22px; }
+      .auth-panel {
+        padding: 28px 22px;
+      }
+
+      .auth-heading h1 {
+        font-size: 24px;
+      }
+
+      .social-btn {
+        font-size: 13px;
+      }
+
+      .auth-tabs button {
+        font-size: 13px;
+      }
     }
+
   </style>
 </head>
 
+
 <body>
-  <div class="auth-container">
-    <div class="auth-box">
 
-      <div class="auth-header">
-        <h2 id="form-title">SANNA 로그인</h2>
-        <p id="form-sub">가입한 계정으로 로그인해 주세요.</p>
+  <main class="auth-layout">
+
+    <section class="auth-panel">
+
+      <!-- ======================================
+           로그인 페이지 제목
+           ====================================== -->
+
+      <div class="auth-heading">
+
+        <h1 id="heading">
+          SANNA 로그인
+        </h1>
+
+        <p id="subheading">
+          기록을 함께하는 산나 커뮤니티
+        </p>
+
       </div>
 
-      <!-- 간편 로그인 -->
-      <div class="social-btn-group">
-        <button type="button" class="social-btn btn-kakao" onclick="handleSocialAuth('카카오')">
-          카카오로 시작하기
-        </button>
-        <button type="button" class="social-btn btn-naver" onclick="handleSocialAuth('네이버')">
-          네이버로 시작하기
-        </button>
-        <button type="button" class="social-btn btn-google" onclick="handleSocialAuth('Google')">
-          Google 계정으로 로그인
-        </button>
-      </div>
 
-      <p class="social-hint">간편로그인은 실제 계정 연동 후 이용 가능합니다.</p>
+      <!-- ======================================
+           1. 로그인 / 회원가입 선택 영역
+           ====================================== -->
 
-      <div class="divider">또는 일반 계정</div>
+      <div id="auth-area">
 
-      <form id="auth-form">
+        <div class="auth-tabs">
 
-        <!-- 회원가입 시에만 표시 -->
-        <div id="signup-fields" style="display:none;">
+          <button
+            type="button"
+            id="tab-login"
+            class="active">
+            로그인
+          </button>
 
-          <div class="member-type-selector">
-            <span class="member-type-label">가입 유형 선택</span>
-            <div class="type-options">
+          <button
+            type="button"
+            id="tab-register">
+            회원가입
+          </button>
 
-              <label class="type-card">
-                <input type="radio" name="member_type" value="guest">
-                <div class="title">일반 회원</div>
-                <div class="desc">공개 페이지 이용</div>
-              </label>
+        </div>
 
-              <label class="type-card">
-                <input type="radio" name="member_type" value="sanna" checked>
-                <div class="title">산나 정회원</div>
-                <div class="desc">정기 공지 접근 (_sanna)</div>
-              </label>
 
-            </div>
+        <!-- ====================================
+             일반 이메일 로그인 / 회원가입
+             ==================================== -->
+
+        <form id="email-form" novalidate>
+
+          <div class="field">
+
+            <label for="email">
+              이메일
+            </label>
+
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="email"
+              required
+              placeholder="example@email.com"
+            />
+
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="username">아이디</label>
-          <input type="text" id="username"
-                 placeholder="영문·숫자·밑줄(_) 3~24자"
-                 autocomplete="username" required>
-        </div>
 
-        <div class="form-group">
-          <label for="password">비밀번호</label>
-          <input type="password" id="password"
-                 placeholder="비밀번호를 입력하세요"
-                 autocomplete="current-password" required>
-        </div>
+          <div class="field">
 
-        <div class="form-group" id="confirm-group" style="display:none;">
-          <label for="confirm-password">비밀번호 확인</label>
-          <input type="password" id="confirm-password"
-                 placeholder="비밀번호를 다시 입력하세요"
-                 autocomplete="new-password">
-        </div>
+            <label for="password">
+              비밀번호
+            </label>
 
-        <button type="submit" class="submit-btn" id="submit-btn">
-          로그인
+            <input
+              type="password"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              minlength="8"
+              required
+              placeholder="8자 이상"
+            />
+
+          </div>
+
+
+          <!-- 회원가입 모드에서만 표시 -->
+
+          <div class="field hidden" id="confirm-wrap">
+
+            <label for="confirm">
+              비밀번호 확인
+            </label>
+
+            <input
+              type="password"
+              id="confirm"
+              name="confirm"
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="비밀번호를 다시 입력하세요"
+            />
+
+          </div>
+
+
+          <button
+            class="auth-submit"
+            type="submit"
+            id="email-submit">
+            로그인
+          </button>
+
+        </form>
+
+
+        <!-- 비밀번호 재설정 -->
+
+        <button
+          type="button"
+          class="secondary-btn"
+          id="reset-password">
+          비밀번호를 잊으셨나요?
         </button>
 
-        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+        <!-- 이메일 가입 안내 -->
+
+        <p class="signup-note hidden" id="signup-note">
+
+          이메일 인증 후 로그인하면
+          SANNA 회원정보 입력 화면이 표시됩니다.
+
+          가입을 완료해야 서비스에 접근할 수 있습니다.
+
+        </p>
+
+
+        <!-- ====================================
+             간편로그인 영역
+             ==================================== -->
+
+        <div class="auth-divider">
+          또는 간편 계정으로 시작하기
+        </div>
+
+
+        <div class="social-stack">
+
+          <!-- 카카오 -->
+
+          <button
+            type="button"
+            class="social-btn kakao"
+            data-provider="kakao">
+            카카오로 시작하기
+          </button>
+
+
+          <!-- 네이버 -->
+
+          <button
+            type="button"
+            class="social-btn naver"
+            data-provider="custom:naver">
+            네이버로 시작하기
+          </button>
+
+
+          <!-- Google -->
+
+          <button
+            type="button"
+            class="social-btn"
+            data-provider="google">
+            Google 계정으로 시작하기
+          </button>
+
+        </div>
+
+
+        <p class="signup-note">
+
+          처음 인증한 소셜 계정은 반드시
+          SANNA 회원가입을 완료해야 합니다.
+
+          기존 가입자는 바로 로그인됩니다.
+
+        </p>
+
+      </div>
+
+
+      <!-- ======================================
+           2. SANNA 신규 회원정보 입력
+           ====================================== -->
+
+      <form id="onboarding" class="hidden" novalidate>
+
+        <p class="signup-note">
+
+          계정 인증이 완료되었습니다.
+
+          아래 SANNA 회원정보를 제출해야
+          가입이 완료됩니다.
+
+        </p>
+
+
+        <!-- 이름 -->
+
+        <div class="field">
+
+          <label for="display-name">
+            이름 (관리자 확인용)
+          </label>
+
+          <input
+            id="display-name"
+            name="display-name"
+            type="text"
+            minlength="2"
+            maxlength="30"
+            autocomplete="name"
+            placeholder="이름을 입력하세요"
+            required
+          />
+
+        </div>
+
+
+        <!-- 회원 유형 선택 -->
+
+        <div
+          class="field"
+          style="font-weight:750;font-size:13px;">
+
+          가입 유형
+
+        </div>
+
+
+        <!-- 일반 회원 -->
+
+        <label class="radio-box">
+
+          <input
+            type="radio"
+            name="join-type"
+            value="guest"
+            checked
+          />
+
+          <div>
+
+            <strong>일반 회원</strong>
+
+            <span>
+              공개 콘텐츠 이용
+            </span>
+
+          </div>
+
+        </label>
+
+
+        <!-- 정회원 신청 -->
+
+        <label class="radio-box">
+
+          <input
+            type="radio"
+            name="join-type"
+            value="sanna"
+          />
+
+          <div>
+
+            <strong>산나 정회원 신청</strong>
+
+            <span>
+              관리자 승인 후 정기 공지 이용 가능
+            </span>
+
+          </div>
+
+        </label>
+
+
+        <!-- 산나 활동명 -->
+
+        <div class="field">
+
+          <label for="member-alias">
+            산나에서 사용하는 이름 (선택)
+          </label>
+
+          <input
+            id="member-alias"
+            name="member-alias"
+            type="text"
+            maxlength="40"
+            placeholder="관리자가 알아보는 활동명"
+          />
+
+        </div>
+
+
+        <!-- 본인 확인 참고사항 -->
+
+        <div class="field">
+
+          <label for="reference-note">
+            본인 확인 참고사항 (선택)
+          </label>
+
+          <input
+            id="reference-note"
+            name="reference-note"
+            type="text"
+            maxlength="160"
+            placeholder="예: 함께 활동한 모임 또는 소개자 이름"
+          />
+
+        </div>
+
+
+        <!-- 개인정보 수집 동의 -->
+
+        <label class="terms">
+
+          <input
+            type="checkbox"
+            id="data-consent"
+            required
+          />
+
+          <span>
+
+            <a
+              href="privacy.html"
+              target="_blank"
+              rel="noopener">
+
+              회원정보 수집·이용 안내
+
+            </a>
+
+            를 확인했으며 계정 및 정회원 승인
+            목적으로 정보를 저장·이용하는 데
+            동의합니다.
+
+          </span>
+
+        </label>
+
+
+        <!-- 가입 완료 버튼 -->
+
+        <button
+          class="auth-submit"
+          type="submit"
+          id="finish-submit">
+
+          SANNA 회원가입 완료
+
+        </button>
+
+
+        <!-- 가입 취소 -->
+
+        <button
+          type="button"
+          class="secondary-btn"
+          id="cancel-onboarding">
+
+          가입 취소 및 로그아웃
+
+        </button>
+
       </form>
 
-      <div class="toggle-auth">
-        <span id="toggle-text">계정이 없으신가요?</span>
-        <button type="button" id="toggle-btn" onclick="toggleMode()">
-          회원가입하기
+
+      <!-- ======================================
+           3. 비밀번호 재설정 화면
+           ====================================== -->
+
+      <form id="new-password" class="hidden">
+
+        <p class="signup-note">
+          새 비밀번호를 등록해 주세요.
+        </p>
+
+
+        <div class="field">
+
+          <label for="replacement-password">
+            새 비밀번호
+          </label>
+
+          <input
+            type="password"
+            id="replacement-password"
+            minlength="8"
+            required
+            autocomplete="new-password"
+            placeholder="새 비밀번호를 입력하세요"
+          />
+
+        </div>
+
+
+        <button
+          class="auth-submit"
+          type="submit">
+
+          비밀번호 변경
+
         </button>
+
+      </form>
+
+
+      <!-- ======================================
+           4. 처리 결과 메시지
+           ====================================== -->
+
+      <div
+        class="feedback"
+        role="status"
+        aria-live="polite"
+        id="message">
       </div>
 
-      <div style="text-align:center; margin-top:20px;">
-        <a href="index.html" style="font-size:0.8rem; color:#888;">
+
+      <!-- ======================================
+           5. 메인으로 돌아가기
+           ====================================== -->
+
+      <div class="back">
+
+        <a href="index.html">
           ← 메인으로 돌아가기
         </a>
+
       </div>
 
-    </div>
-  </div>
+    </section>
 
-  <script>
-    // 브라우저에 데이터를 저장하는 테스트용 인증
-    // 실제 서비스에서는 서버 인증으로 교체해야 합니다.
-    const USERS_KEY = 'sanna_users_v2';
-    const SESSION_KEY = 'sanna_current_user';
+  </main>
 
-    let isSignupMode = false;
 
-    function $(id) {
-      return document.getElementById(id);
-    }
+  <!-- ==========================================
+       Supabase 및 로그인 처리 스크립트
+       다음 단계에서 연결
+       ========================================== -->
 
-    function showMessage(message, type = 'error') {
-      $('feedback').textContent = message;
-      $('feedback').className = 'feedback ' + type;
-    }
+  <script src="./supabase-config.js"></script>
 
-    function clearMessage() {
-      $('feedback').textContent = '';
-      $('feedback').className = 'feedback';
-    }
-
-    // 로그인 / 회원가입 화면 전환
-    function setMode(signup) {
-      isSignupMode = signup;
-
-      $('form-title').textContent = signup ? 'SANNA 회원가입' : 'SANNA 로그인';
-      $('form-sub').textContent = signup
-        ? '회원가입 완료 후 다시 로그인해 주세요.'
-        : '가입한 계정으로 로그인해 주세요.';
-
-      $('signup-fields').style.display = signup ? 'block' : 'none';
-      $('confirm-group').style.display = signup ? 'block' : 'none';
-      $('confirm-password').required = signup;
-
-      $('submit-btn').textContent = signup ? '회원가입 완료' : '로그인';
-      $('toggle-text').textContent = signup
-        ? '이미 계정이 있으신가요?'
-        : '계정이 없으신가요?';
-      $('toggle-btn').textContent = signup ? '로그인하기' : '회원가입하기';
-
-      $('password').value = '';
-      $('confirm-password').value = '';
-      $('password').autocomplete = signup ? 'new-password' : 'current-password';
-
-      clearMessage();
-    }
-
-    function toggleMode() {
-      setMode(!isSignupMode);
-    }
-
-    // 저장된 회원 데이터 불러오기
-    function getUsers() {
-      try {
-        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-        return users && typeof users === 'object' && !Array.isArray(users)
-          ? users
-          : {};
-      } catch {
-        return {};
-      }
-    }
-
-    // 비밀번호 해시 처리 (테스트용 로컬 저장)
-    function bytesToBase64(bytes) {
-      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
-    }
-
-    function base64ToBytes(value) {
-      return Uint8Array.from(atob(value), c => c.charCodeAt(0));
-    }
-
-    async function hashPassword(password, salt) {
-      if (!window.crypto || !crypto.subtle) {
-        throw new Error('HTTPS 환경에서 사이트에 접속해 주세요.');
-      }
-
-      const encoder = new TextEncoder();
-      const key = await crypto.subtle.importKey(
-        'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']
-      );
-
-      const bits = await crypto.subtle.deriveBits({
-        name: 'PBKDF2',
-        salt: base64ToBytes(salt),
-        iterations: 150000,
-        hash: 'SHA-256'
-      }, key, 256);
-
-      return bytesToBase64(bits);
-    }
-
-    // 회원가입
-    async function registerUser(username, password) {
-      const type = document.querySelector(
-        'input[name="member_type"]:checked'
-      ).value;
-
-      if (!/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
-        throw new Error('아이디는 영문, 숫자, 밑줄(_) 3~24자로 입력해 주세요.');
-      }
-
-      if (password.length < 8) {
-        throw new Error('비밀번호는 8자 이상이어야 합니다.');
-      }
-
-      if (password !== $('confirm-password').value) {
-        throw new Error('비밀번호 확인이 일치하지 않습니다.');
-      }
-
-      if (type === 'guest' && username.toLowerCase().endsWith('_sanna')) {
-        throw new Error('일반 회원은 _sanna 아이디를 사용할 수 없습니다.');
-      }
-
-      let finalUsername = username;
-
-      if (type === 'sanna' && !username.toLowerCase().endsWith('_sanna')) {
-        finalUsername += '_sanna';
-      }
-
-      const users = getUsers();
-      const key = finalUsername.toLowerCase();
-
-      if (Object.prototype.hasOwnProperty.call(users, key)) {
-        throw new Error('이미 등록된 아이디입니다.');
-      }
-
-      if (!window.crypto || !crypto.subtle) {
-        throw new Error('HTTPS 환경에서 사이트에 접속해 주세요.');
-      }
-
-      const salt = bytesToBase64(crypto.getRandomValues(new Uint8Array(16)));
-      const passwordHash = await hashPassword(password, salt);
-
-      users[key] = {
-        username: finalUsername,
-        isSanna: type === 'sanna',
-        salt: salt,
-        passwordHash: passwordHash
-      };
-
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-
-      // 회원가입과 로그인 분리: 여기서 로그인하지 않음
-      localStorage.removeItem(SESSION_KEY);
-
-      setMode(false);
-      $('username').value = finalUsername;
-
-      showMessage(
-        '회원가입이 완료되었습니다. 아이디와 비밀번호로 로그인해 주세요.',
-        'success'
-      );
-    }
-
-    // 일반 로그인
-    async function loginUser(username, password) {
-      const users = getUsers();
-      const user = users[username.toLowerCase()];
-
-      if (!user || !user.salt || !user.passwordHash) {
-        throw new Error('등록된 계정이 없습니다. 먼저 회원가입해 주세요.');
-      }
-
-      const hash = await hashPassword(password, user.salt);
-
-      if (hash !== user.passwordHash) {
-        throw new Error('비밀번호가 올바르지 않습니다.');
-      }
-
-      // 비밀번호 검증 후에만 로그인
-      localStorage.setItem(SESSION_KEY, JSON.stringify({
-        username: user.username,
-        isSanna: user.isSanna === true,
-        authVersion: 2,
-        loggedInAt: new Date().toISOString()
-      }));
-
-      window.location.href = 'index.html';
-    }
-
-    // 폼 제출
-    $('auth-form').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      clearMessage();
-
-      const username = $('username').value.trim();
-      const password = $('password').value;
-      const submitBtn = $('submit-btn');
-
-      submitBtn.disabled = true;
-
-      try {
-        if (isSignupMode) {
-          await registerUser(username, password);
-        } else {
-          await loginUser(username, password);
-        }
-      } catch (error) {
-        showMessage(error.message || '처리 중 오류가 발생했습니다.');
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
-
-    // 실제 OAuth 미연동 상태에서 가짜 로그인 방지
-    function handleSocialAuth(provider) {
-      showMessage(
-        provider + ' 계정 인증은 아직 연결되지 않았습니다. ' +
-        '현재는 일반 계정으로 회원가입한 후 로그인해 주세요.',
-        'info'
-      );
-    }
-
-    // 기존 가짜 로그인 세션 정리
-    (function clearOldSession() {
-      try {
-        const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-        if (session && session.authVersion !== 2) {
-          localStorage.removeItem(SESSION_KEY);
-        }
-      } catch {
-        localStorage.removeItem(SESSION_KEY);
-      }
-    })();
+  <script
+    type="module"
+    src="./login.js">
   </script>
+
 </body>
 </html>
