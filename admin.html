@@ -1,0 +1,176 @@
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SANNA | 관리자 회원관리</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+
+  <style>
+    body { background: #fcfcfc; }
+    .admin-shell { max-width: 1080px; min-height: 100vh; margin: 0 auto; padding: 42px 24px 80px; }
+    .admin-nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin: 0 0 60px; padding: 0; }
+    .admin-logo { color: #1a1a1a; font-size: 25px; font-weight: 900; letter-spacing: 2px; }
+    .admin-nav-links { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; }
+    .admin-nav-links a { color: #666; font-size: 13px; font-weight: 700; }
+    .admin-nav-links a:hover { color: #1a1a1a; }
+    .admin-kicker { color: #888; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; }
+    .admin-header h1 { margin: 10px 0 12px; font-size: 37px; font-weight: 900; letter-spacing: -1.5px; line-height: 1.25; }
+    .admin-header p { color: #707070; font-size: 15px; line-height: 1.8; }
+    .admin-message { margin: 26px 0; border: 1px solid #e8e8e8; border-radius: 10px; background: #f3f3f3; padding: 16px 18px; color: #555; font-size: 14px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .admin-message.error { background: #fff2f0; border-color: #f3d8d5; color: #a02424; }
+    .admin-message.success { background: #eff9f1; border-color: #d6eadb; color: #216b37; }
+    .admin-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .admin-stat { background: #fff; border: 1px solid #ececec; border-radius: 14px; padding: 21px; }
+    .admin-stat-label { display: block; color: #777; font-size: 13px; font-weight: 750; }
+    .admin-stat-value { display: block; margin-top: 10px; font-size: 31px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+    .admin-section { background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 28px; margin-bottom: 22px; }
+    .admin-section-title { font-size: 20px; font-weight: 850; letter-spacing: -0.5px; }
+    .admin-section-desc { margin: 7px 0 0; color: #888; font-size: 13px; line-height: 1.7; }
+    .admin-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin: 25px 0 18px; }
+    .admin-search { flex: 1 1 260px; min-width: 0; }
+    .admin-search label { display: block; color: #555; font-size: 12px; font-weight: 800; margin-bottom: 7px; }
+    .admin-search input { display: block; width: 100%; border: 1px solid #ddd; border-radius: 9px; padding: 12px 13px; font-size: 14px; }
+    .admin-search input:focus { outline: 2px solid #1a1a1a; outline-offset: 1px; }
+    .admin-refresh { align-self: end; padding: 12px 18px; border: 1px solid #ddd; border-radius: 9px; background: #f8f8f8; color: #222; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .admin-refresh:hover { background: #eee; }
+    .admin-refresh:disabled { opacity: .55; cursor: wait; }
+    .admin-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 21px; }
+    .admin-filters button { border: 1px solid #e1e1e1; border-radius: 20px; padding: 9px 13px; background: white; color: #666; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .admin-filters button.active, .admin-filters button[aria-pressed="true"] { color: #fff; border-color: #1a1a1a; background: #1a1a1a; }
+    .admin-result-count { margin-bottom: 14px; color: #888; font-size: 12px; }
+    .admin-member-list { display: grid; gap: 12px; }
+    /* 아래 카드들은 다음 단계의 admin.js가 안전하게 생성합니다. */
+    .admin-member-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; padding: 20px; border: 1px solid #e9e9e9; border-radius: 12px; }
+    .admin-member-info { flex: 1 1 260px; min-width: 0; }
+    .admin-member-name { color: #1a1a1a; font-size: 17px; font-weight: 850; }
+    .admin-member-meta { color: #707070; font-size: 13px; line-height: 1.65; margin-top: 5px; overflow-wrap: anywhere; }
+    .admin-status-badge { display: inline-block; margin-top: 9px; padding: 4px 9px; border-radius: 20px; background: #f2f2f2; color: #555; font-size: 11px; font-weight: 800; }
+    .admin-member-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .admin-member-actions button { border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; background: #f7f7f7; color: #333; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .admin-member-actions button.approve { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+    .admin-member-actions button:hover { filter: brightness(.95); }
+    .admin-member-actions button:disabled { opacity: .5; cursor: wait; }
+    .admin-empty { padding: 45px 18px; border: 1px dashed #ddd; border-radius: 12px; text-align: center; color: #888; font-size: 14px; }
+    .admin-guide { margin-top: 24px; padding: 20px; background: #fafafa; border-radius: 10px; }
+    .admin-guide h3 { font-size: 14px; font-weight: 850; margin-bottom: 10px; }
+    .admin-guide p { color: #666; font-size: 13px; line-height: 1.8; }
+    .admin-logout { border: 1px solid #ddd; background: #fff; padding: 10px 17px; border-radius: 8px; color: #555; font-size: 13px; font-weight: 750; cursor: pointer; }
+    .admin-footer { margin-top: 45px; padding: 28px 0; text-align: center; color: #aaa; font-size: 12px; border-top: 1px solid #eee; }
+    .hidden { display: none !important; }
+    @media (max-width: 740px) {
+      .admin-shell { padding: 27px 18px 60px; }
+      .admin-nav { margin-bottom: 42px; }
+      .admin-header h1 { font-size: 30px; }
+      .admin-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .admin-section { padding: 21px 17px; }
+      .admin-member-row { padding: 17px; }
+    }
+    @media (max-width: 370px) {
+      .admin-stat { padding: 16px; }
+      .admin-stat-value { font-size: 26px; }
+      .admin-nav-links { gap: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="admin-shell">
+    <!-- 상단 메뉴 -->
+    <nav class="admin-nav" aria-label="관리자 페이지 내비게이션">
+      <a href="index.html" class="admin-logo">SANNA</a>
+      <div class="admin-nav-links">
+        <a href="index.html">← BACK TO HOME</a>
+        <a href="account.html">MY ACCOUNT</a>
+        <button type="button" id="logout-btn" class="admin-logout">로그아웃</button>
+      </div>
+    </nav>
+
+    <!-- 페이지 설명 -->
+    <header class="admin-header">
+      <span class="admin-kicker">SANNA ADMIN</span>
+      <h1>회원 관리</h1>
+      <p>산나 정회원 가입 신청을 확인하고, 승인·거절 및 정회원 권한 회수를 관리합니다.</p>
+    </header>
+
+    <!-- 인증 확인 메시지: 관리자 인증 전에는 회원명단을 표시하지 않음 -->
+    <div id="admin-message" class="admin-message" role="status" aria-live="polite">
+      관리자 권한을 확인하고 있습니다.
+    </div>
+
+    <div id="admin-panel" class="hidden">
+      <!-- 통계 -->
+      <section class="admin-stats" aria-label="회원 현황">
+        <div class="admin-stat">
+          <span class="admin-stat-label">전체 가입 회원</span>
+          <strong id="stat-total" class="admin-stat-value">-</strong>
+        </div>
+        <div class="admin-stat">
+          <span class="admin-stat-label">정회원</span>
+          <strong id="stat-approved" class="admin-stat-value">-</strong>
+        </div>
+        <div class="admin-stat">
+          <span class="admin-stat-label">승인 대기</span>
+          <strong id="stat-pending" class="admin-stat-value">-</strong>
+        </div>
+        <div class="admin-stat">
+          <span class="admin-stat-label">권한 회수</span>
+          <strong id="stat-revoked" class="admin-stat-value">-</strong>
+        </div>
+      </section>
+
+      <!-- 회원 목록 -->
+      <section class="admin-section" aria-labelledby="member-heading">
+        <h2 id="member-heading" class="admin-section-title">회원 목록 및 승인 관리</h2>
+        <p class="admin-section-desc">
+          신규 정회원 신청을 승인하거나 거절할 수 있습니다. 기존 정회원이 탈퇴하면 권한만 회수할 수 있습니다.
+        </p>
+
+        <div class="admin-toolbar">
+          <div class="admin-search">
+            <label for="member-search">회원 검색</label>
+            <input id="member-search" type="search" placeholder="이름, 이메일, 활동명 검색" autocomplete="off">
+          </div>
+          <button type="button" id="refresh-btn" class="admin-refresh">↻ 목록 새로고침</button>
+        </div>
+
+        <!-- 상태별 필터 -->
+        <div id="filters" class="admin-filters" role="group" aria-label="회원 상태별 보기">
+          <button type="button" data-status="all" class="active" aria-pressed="true">전체</button>
+          <button type="button" data-status="pending" aria-pressed="false">승인 대기</button>
+          <button type="button" data-status="approved" aria-pressed="false">정회원</button>
+          <button type="button" data-status="not_requested" aria-pressed="false">일반 회원</button>
+          <button type="button" data-status="rejected" aria-pressed="false">신청 거절</button>
+          <button type="button" data-status="revoked" aria-pressed="false">권한 회수</button>
+        </div>
+
+        <p id="result-count" class="admin-result-count" aria-live="polite"></p>
+        <div id="member-list" class="admin-member-list" aria-live="polite"></div>
+
+        <div class="admin-guide">
+          <h3>정회원 승인 기준</h3>
+          <p>
+            신청자의 이름·이메일·활동명·확인정보를 검토한 후 실제 SANNA 멤버인지 확인해 주세요.
+            승인 후에는 정회원 전용 공지 접근 권한이 부여됩니다. 권한 회수 후 다시 정회원이 되려면
+            회원이 마이페이지에서 재신청하고, 관리자가 다시 승인해야 합니다.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <noscript>
+      <p class="admin-message error">관리자 페이지를 이용하려면 JavaScript를 활성화해야 합니다.</p>
+    </noscript>
+
+    <footer class="admin-footer">© 2026 SANNA. All rights reserved.</footer>
+  </main>
+
+  <!-- Supabase 인증 설정 및 관리자 처리 기능 -->
+  <script src="./supabase-config.js"></script>
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>
