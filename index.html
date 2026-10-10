@@ -1,263 +1,392 @@
+
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SANNA | Official</title>
-    <link rel="stylesheet" href="./style.css" />
-    <link
-      rel="stylesheet"
-      as="style"
-      crossorigin
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
-    />
-    <style>
-      /* 접근 제한 레이어 팝업 (Modal) 스타일 */
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-      }
-      .modal-content {
-        background: #ffffff;
-        width: 90%;
-        max-width: 420px;
-        padding: 35px 30px;
-        border-radius: 16px;
-        position: relative;
-        text-align: center;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        animation: modalFadeIn 0.25s ease-out;
-      }
-      @keyframes modalFadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .modal-close-btn {
-        position: absolute;
-        top: 15px; right: 20px;
-        font-size: 1.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        color: #888;
-        border: none;
-        background: none;
-      }
-      .modal-close-btn:hover { color: #1a1a1a; }
-      .modal-icon {
-        font-size: 2.8rem;
-        margin-bottom: 15px;
-      }
-      .modal-title {
-        font-size: 1.3rem;
-        font-weight: 800;
-        margin-bottom: 10px;
-        color: #1a1a1a;
-      }
-      .modal-desc {
-        font-size: 0.95rem;
-        color: #666;
-        line-height: 1.5;
-        margin-bottom: 25px;
-      }
-      .modal-action-btn {
-        display: block;
-        width: 100%;
-        padding: 12px;
-        background: #1a1a1a;
-        color: #fff;
-        border-radius: 8px;
-        font-weight: 700;
-        text-decoration: none;
-        font-size: 0.95rem;
-      }
-    </style>
-  </head>
-  <body>
-    <section class="section zero-section">
-      <div class="zero-content">
-        <div class="notice-badge">LATEST</div>
-        <p class="notice-text">산나의 정기 보고 및 최신 소식을 확인하세요.</p>
-        <div class="zero-links">
-          <a href="#" target="_blank">정기 보고 바로가기 →</a>
-          <a href="#" target="_blank">전체 공지 보기 →</a>
-        </div>
-      </div>
-    </section>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SANNA | Official</title>
 
-    <section class="section intro-section">
-      <nav>
-        <div class="logo">SANNA</div>
-        <ul class="nav-menu">
-          <li><a href="#updates">UPDATES</a></li>
-          <li class="nav-dropdown">
-            <a href="javascript:void(0)" class="dropbtn">RESOURCES ▼</a>
-            <div class="nav-dropdown-list">
-              <a href="#">정기 보고</a>
-              <a href="#">활동 사진</a>
-              <a href="#">기획 문서</a>
-            </div>
-          </li>
-          <li><a href="#info">INFO</a></li>
-          <li class="login-item" id="auth-nav-item">
-            <a href="login.html" class="login-btn">LOGIN</a>
-          </li>
-        </ul>
-      </nav>
-      <div class="intro-content">
-        <span class="tag">ABOUT SANNA</span>
-        <h1>기록은 우리의 삶을<br />더 선명하게 만듭니다.</h1>
-        <p>
-          산나는 매주, 매달, 매년의 소중한 순간들을 기록하고 공유하는 아카이브
-          커뮤니티입니다.
-        </p>
-      </div>
-    </section>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 
-    <section id="updates" class="section update-section">
-      <div class="container">
-        <h2 class="section-title">UPDATES</h2>
-        <div class="update-grid">
-          <!-- 정기 공지 (권한제한 카드) -->
-          <div class="update-card">
-            <span class="card-label">WEEKLY</span>
-            <h3>정기 공지</h3>
-            <p>이번 주의 새로운 소식과 일정 안내입니다.</p>
-            <a href="javascript:void(0)" onclick="accessArchive()" class="link-btn">READ MORE</a>
-          </div>
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0009;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+    }
 
-          <div class="update-card highlight">
-            <span class="card-label">MONTHLY</span>
-            <h3>2026 정모 기록</h3>
-            <p>매달 진행되는 2026년의 생생한 정기 모임 리포트입니다.</p>
-            <a
-              href="https://www.notion.so/2026-2b52cda2987c80b29c04df650b5ef1db?pvs=4"
-              target="_blank"
-              class="link-btn"
-              >GO TO 2026</a
-            >
-          </div>
+    .modal-overlay.open {
+      display: flex;
+    }
 
-          <div class="update-card">
-            <span class="card-label">YEARLY</span>
-            <h3>정모 아카이브</h3>
-            <p>2024년부터 이어져 온 산나의 역사를 연도별로 확인하세요.</p>
-            <div class="follow-up-wrapper">
-              <span class="link-btn">FOLLOW UP ▼</span>
-              <div class="dropdown-content">
-                <a
-                  href="https://www.notion.so/2026-2b52cda2987c80b29c04df650b5ef1db?pvs=4"
-                  target="_blank"
-                  >2026 ARCHIVE</a
-                >
-                <a
-                  href="https://www.notion.so/2025-14a2cda2987c80b29c04df650b5ef1db?pvs=4"
-                  target="_blank"
-                  >2025 ARCHIVE</a
-                >
-                <a
-                  href="https://www.notion.so/2024-1bc65e372a3a46aba439d050d5855ef7?pvs=4"
-                  target="_blank"
-                  >2024 ARCHIVE</a
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 36px 30px;
+      width: 100%;
+      max-width: 430px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 20px 40px #0002;
+    }
 
-    <section id="info" class="section info-section">
-      <div class="info-grid">
-        <div class="info-item">
-          <h4>오시는 길</h4>
-          <p>서울시 어딘가 산나 스튜디오</p>
-        </div>
-        <div class="info-item">
-          <h4>후원 방법</h4>
-          <p>국민은행 496501-01-193503 (예금주: 김빛나)</p>
-        </div>
-        <div class="info-item">
-          <h4>조직 소개 더보기</h4>
-          <a href="#">Learn about our team →</a>
-        </div>
-      </div>
-    </section>
+    .modal-close-btn {
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      border: 0;
+      background: transparent;
+      font-size: 24px;
+      cursor: pointer;
+    }
 
-    <footer>
-      <p>&copy; 2026 SANNA. All rights reserved.</p>
-    </footer>
+    .modal-content h2 {
+      font-size: 22px;
+      margin: 8px 0;
+    }
 
-    <!-- 회원 전용 제한 경고 모달 (X버튼을 클릭해야만 닫힘) -->
-    <div class="modal-overlay" id="access-modal">
-      <div class="modal-content">
-        <button class="modal-close-btn" onclick="closeModal()">✕</button>
-        <div class="modal-icon">🔒</div>
-        <div class="modal-title">산나 회원 전용 콘텐츠</div>
-        <div class="modal-desc" id="modal-desc-text">
-          정기 공지는 산나 정회원(<b>_sanna</b> 계정)만 읽을 수 있습니다.<br>
-          로그인하시거나 회원가입을 진행해 주세요.
-        </div>
-        <a href="login.html" class="modal-action-btn">로그인 / 회원가입 하러 가기</a>
+    .modal-content p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 15px 0 23px;
+    }
+
+    .modal-action {
+      display: block;
+      background: #1a1a1a;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+
+    .account-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .account-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .role-label {
+      font-size: 11px;
+      color: #8a6800;
+    }
+
+    .nav-small {
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .nav-menu a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid #2685ff;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 760px) {
+      nav {
+        align-items: flex-start;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .nav-menu {
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .account-bar {
+        flex-wrap: wrap;
+      }
+
+      .zero-content {
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 상단 최신 공지 배너 -->
+  <section class="section zero-section">
+    <div class="zero-content">
+      <div class="notice-badge">LATEST</div>
+
+      <p class="notice-text">
+        산나의 정기 보고 및 최신 소식을 확인하세요.
+      </p>
+
+      <div class="zero-links">
+        <a href="archive.html" data-requires-archive>
+          정기 보고 바로가기 →
+        </a>
+
+        <a href="archive.html" data-requires-archive>
+          전체 공지 보기 →
+        </a>
       </div>
     </div>
+  </section>
 
-    <script>
-      // 페이지 로드 시 로그인 상태 체크 및 네비게이션 처리
-      document.addEventListener("DOMContentLoaded", function() {
-        const currentUser = JSON.parse(localStorage.getItem('sanna_current_user'));
-        const authNavItem = document.getElementById('auth-nav-item');
 
-        if (currentUser) {
-          // 로그인된 상태일 때 유저 이름과 로그아웃 버튼 표시
-          authNavItem.innerHTML = `
-            <span style="font-size:0.85rem; font-weight:700; margin-right:10px;">${currentUser.username}</span>
-            <a href="javascript:void(0)" onclick="handleLogout()" class="login-btn" style="background:#666;">LOGOUT</a>
-          `;
-        }
-      });
+  <!-- 메인 소개 -->
+  <section class="section intro-section">
 
-      function handleLogout() {
-        localStorage.removeItem('sanna_current_user');
-        alert('로그아웃 되었습니다.');
-        window.location.reload();
-      }
+    <nav>
+      <a href="index.html" class="logo">SANNA</a>
 
-      // 정기 공지 클릭 시 권한 체크 함수
-      function accessArchive() {
-        const currentUser = JSON.parse(localStorage.getItem('sanna_current_user'));
+      <ul class="nav-menu">
 
-        // 1. 아예 로그인을 안 한 경우
-        if (!currentUser) {
-          document.getElementById('modal-desc-text').innerHTML = "정기 공지는 산나 정회원(<b>_sanna</b> 계정)만 읽을 수 있습니다.<br>로그인하시거나 산나 회원으로 가입해 주세요.";
-          openModal();
-          return;
-        }
+        <li>
+          <a href="#updates">UPDATES</a>
+        </li>
 
-        // 2. 로그인되었으나 아이디 뒤에 '_sanna'가 없는 일반 회원인 경우
-        if (!currentUser.isSanna) {
-          document.getElementById('modal-desc-text').innerHTML = `현재 계정(<b>${currentUser.username}</b>)은 산나 회원 계정이 아닙니다.<br>정기 공지 접근 권한이 없습니다.`;
-          openModal();
-          return;
-        }
+        <li class="nav-dropdown">
+          <a href="#updates" class="dropbtn">
+            RESOURCES ▼
+          </a>
 
-        // 3. 산나 정회원(_sanna)인 경우 정상 이동
-        window.location.href = 'archive.html';
-      }
+          <div class="nav-dropdown-list">
 
-      function openModal() {
-        document.getElementById('access-modal').style.display = 'flex';
-      }
+            <a href="archive.html" data-requires-archive>
+              정기 보고
+            </a>
 
-      // X 버튼을 클릭해야만 닫힘
-      function closeModal() {
-        document.getElementById('access-modal').style.display = 'none';
-      }
-    </script>
-  </body>
+            <a href="#updates">활동 사진</a>
+
+            <a href="#updates">기획 문서</a>
+
+          </div>
+        </li>
+
+        <li>
+          <a href="#info">INFO</a>
+        </li>
+
+        <!-- 로그인 회원에게 표시 -->
+        <li id="account-nav" hidden>
+          <a href="account.html">MY ACCOUNT</a>
+        </li>
+
+        <!-- 관리자에게만 표시 -->
+        <li id="admin-nav" hidden>
+          <a href="admin.html">ADMIN</a>
+        </li>
+
+        <!-- 로그인 상태에 따라 변경 -->
+        <li id="auth-nav-item">
+          <a href="login.html" class="login-btn">
+            LOGIN
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+
+    <div class="intro-content">
+
+      <span class="tag">ABOUT SANNA</span>
+
+      <h1>
+        기록은 우리의 삶을<br>
+        더 선명하게 만듭니다.
+      </h1>
+
+      <p>
+        산나는 매주, 매달, 매년의 소중한 순간들을
+        기록하고 공유하는 아카이브 커뮤니티입니다.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- 업데이트 영역 -->
+  <section id="updates" class="section update-section">
+
+    <div class="container">
+
+      <h2 class="section-title">UPDATES</h2>
+
+      <div class="update-grid">
+
+        <!-- 정기 공지 -->
+        <div class="update-card">
+
+          <span class="card-label">WEEKLY</span>
+
+          <h3>정기 공지</h3>
+
+          <p>
+            이번 주의 새로운 소식과 일정 안내입니다.
+          </p>
+
+          <a
+            href="archive.html"
+            data-requires-archive
+            class="link-btn">
+            READ MORE
+          </a>
+
+        </div>
+
+
+        <!-- 2026 정모 기록 -->
+        <div class="update-card highlight">
+
+          <span class="card-label">MONTHLY</span>
+
+          <h3>2026 정모 기록</h3>
+
+          <p>
+            정회원 전용 월별 기록 및 공지를 확인하세요.
+          </p>
+
+          <a
+            href="archive.html?year=2026"
+            data-requires-archive
+            class="link-btn">
+            GO TO 2026
+          </a>
+
+        </div>
+
+
+        <!-- 연도별 아카이브 -->
+        <div class="update-card">
+
+          <span class="card-label">YEARLY</span>
+
+          <h3>정모 아카이브</h3>
+
+          <p>
+            승인된 정회원만 연도별 기록을 열람할 수 있습니다.
+          </p>
+
+          <div class="follow-up-wrapper" tabindex="0">
+
+            <span class="link-btn">
+              FOLLOW UP ▼
+            </span>
+
+            <div class="dropdown-content">
+
+              <a
+                href="archive.html?year=2026"
+                data-requires-archive>
+                2026 ARCHIVE
+              </a>
+
+              <a
+                href="archive.html?year=2025"
+                data-requires-archive>
+                2025 ARCHIVE
+              </a>
+
+              <a
+                href="archive.html?year=2024"
+                data-requires-archive>
+                2024 ARCHIVE
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 하단 정보 -->
+  <section id="info" class="section info-section">
+
+    <div class="info-grid">
+
+      <div class="info-item">
+        <h4>오시는 길</h4>
+        <p>서울시 어딘가 산나 스튜디오</p>
+      </div>
+
+      <div class="info-item">
+        <h4>후원 방법</h4>
+        <p>
+          국민은행 496501-01-193503 (예금주: 김빛나)
+        </p>
+      </div>
+
+      <div class="info-item">
+        <h4>조직 소개 더보기</h4>
+        <a href="#info">
+          Learn about our team →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 푸터 -->
+  <footer>
+    <p>
+      &copy; 2026 SANNA. All rights reserved.
+    </p>
+  </footer>
+
+
+  <!-- 정회원 접근 제한 모달 -->
+  <div
+    class="modal-overlay"
+    id="access-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-heading">
+
+    <div class="modal-content">
+
+      <button
+        class="modal-close-btn"
+        id="close-modal"
+        aria-label="닫기">
+        ×
+      </button>
+
+      <div style="font-size:37px">🔒</div>
+
+      <h2 id="modal-heading">
+        회원 전용 콘텐츠
+      </h2>
+
+      <p id="modal-message"></p>
+
+      <a
+        href="login.html"
+        id="modal-action"
+        class="modal-action">
+        로그인 / 회원가입
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- Supabase 설정 및 메인 기능 -->
+  <script src="./supabase-config.js"></script>
+  <script type="module" src="./index.js"></script>
+
+</body>
 </html>
