@@ -24,7 +24,7 @@ window.SANNA_CONFIG = {
      프로젝트 생성 후 실제 주소로 교체하세요.
      ===================================================== */
 
-  url: "https://YOUR_PROJECT_REF.supabase.co",
+  url: "https://xdqztfbzyxonuqollgfc.supabase.co",
 
 
   /* =====================================================
@@ -40,7 +40,7 @@ window.SANNA_CONFIG = {
      Secret Key 또는 service_role Key는 사용 금지
      ===================================================== */
 
-  publishableKey: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY",
+  publishableKey: "sb_publishable_Zhu-_OM8p6JmPBwN6JjxxA_YBaU3PdQ",
 
 
   /* =====================================================
